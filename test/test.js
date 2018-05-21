@@ -47,3 +47,21 @@ test('config:fun', t => {
   `
   check(t, html, {tagName: tag => tag !== 'div'})
 })
+
+test('config:data-attributes', t => {
+  const html = `
+  <div>
+    <div data-x="a">
+      <span data-y="1"></span>
+      <span data-y="2"></span>
+      <span data-y="3"></span>
+    </div>
+    <div data-x="b">
+      <span data-y="1"></span>
+      <span data-y="2"></span>
+      <span data-y="3"></span>
+    </div>
+  </div>
+  `
+  check(t, html)
+})
