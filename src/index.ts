@@ -70,7 +70,11 @@ function bottomUpSearch(input: Element, limit: Limit, fallback?: () => Path | nu
   let i = 0
 
   while (current && current !== config.root.parentElement) {
-    let level: Node[] = maybe(id(current)) || maybe(...classNames(current)) || maybe(tagName(current)) || [any()]
+    let level: Node[] = maybe(id(current)) ||
+    maybe(...classNames(current)) ||
+    maybe(...dataAttributes(current)) ||
+    maybe(tagName(current)) ||
+    [any()]
 
     const nth = index(current)
 
@@ -184,12 +188,25 @@ function classNames(input: Element): Node[] {
   }))
 }
 
+function dataAttributes(input: Element): Node[] {
+  const attributes = [].filter.call(input.attributes, attribute => {
+    return /^data-/.test(attribute.name)
+  })
+
+  return attributes.map(attribute => {
+    return {
+      name: `[` + attribute.name + `="` + attribute.value + `"]`,
+      penalty: 2
+    }
+  })
+}
+
 function tagName(input: Element): Node | null {
   const name = input.tagName.toLowerCase()
   if (config.tagName(name)) {
     return {
       name,
-      penalty: 2
+      penalty: 3
     }
   }
   return null
@@ -198,7 +215,7 @@ function tagName(input: Element): Node | null {
 function any(): Node {
   return {
     name: '*',
-    penalty: 3
+    penalty: 4
   }
 }
 
