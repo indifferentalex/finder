@@ -64,4 +64,5 @@ test('config:data-attributes', t => {
   </div>
   `
   check(t, html)
+  check(t, html, {dataAttribute: attribute => attribute !== 'data-x'})
 })

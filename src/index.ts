@@ -17,6 +17,7 @@ enum Limit {
 export type Options = {
   root: Element
   className: (name: string) => boolean
+  dataAttribute: (attribute: string) => boolean
   tagName: (name: string) => boolean
   seedMinLength: number
   optimizedMinLength: number
@@ -37,6 +38,7 @@ export default function (input: Element, options?: Partial<Options>) {
   const defaults: Options = {
     root: document.body,
     className: (name: string) => true,
+    dataAttribute: (attribute: string) => true,
     tagName: (name: string) => true,
     seedMinLength: 1,
     optimizedMinLength: 2,
@@ -189,9 +191,10 @@ function classNames(input: Element): Node[] {
 }
 
 function dataAttributes(input: Element): Node[] {
-  const attributes = [].filter.call(input.attributes, attribute => {
-    return /^data-/.test(attribute.name)
-  })
+  const attributes = Array.from(input.attributes)
+    .filter(attribute => {
+      return config.dataAttribute(attribute.name) && /^data-/.test(attribute.name)
+    })
 
   return attributes.map(attribute => {
     return {
